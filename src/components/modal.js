@@ -19,8 +19,11 @@ function closePopupByEsc(e) {
 }
 
 function handelOwerlayClose(e) {
-  if (e.target.classList.contains('popup') || (e.target.classList.contains('popup__close'))){
-    closePopup(e.target)
+  if (
+    e.target.classList.contains("popup") ||
+    e.target.classList.contains("popup__close")
+  ) {
+    closePopup(e.target);
   }
 }
 
