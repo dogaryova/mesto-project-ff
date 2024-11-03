@@ -1,1 +1,1 @@
-https://github.com/dogaryova/mesto-project-ff.git
+https://dogaryova.github.io/mesto-project-ff/
