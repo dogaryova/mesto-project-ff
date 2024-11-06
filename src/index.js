@@ -1,8 +1,8 @@
 import "./pages/index.css";
 //import { initialCards } from './components/cards';
 import { openPopup, closePopup } from "./components/modal";
-import { cardCreate } from "./components/card";
-import { enableValidation, selectors } from "./components/validation";
+import { cardCreate, likeCard, deleteCard } from "./components/card";
+import { enableValidation } from "./components/validation";
 import {
   getProfileData,
   getInitialCards,
@@ -10,6 +10,15 @@ import {
   editAvatarApi,
   editProfileData,
 } from "./components/api";
+
+export const selectors = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
 
@@ -60,7 +69,7 @@ function setDataProfile(data) {
 
 function renderCards(cards, id) {
   cards.forEach((card) => {
-    const dataEl = cardCreate(card, showImagePopup, id);
+    const dataEl = cardCreate(card, showImagePopup, id, likeCard, deleteCard);
     listCard.append(dataEl);
   });
 }
@@ -77,27 +86,20 @@ profileFormEdit.addEventListener("submit", (e) => {
   e.preventDefault();
   profileFormEditBtn.textContent = "Сохранение...";
   editProfileData(nameInput.value, inputJob.value)
-    .then(() => {
-      profileName.textContent = nameInput.value;
-      profileDescription.textContent = inputJob.value;
+    .then((data) => {
+      profileName.textContent = data.name;
+      profileDescription.textContent = data.about;
       closePopup(editProfilPopup);
-      profileFormEditBtn.textContent = "Сохранить";
     })
     .catch((e) => {
-      console.error("ошибка " + e);
+      console.error("ошибка редактирования профиля: " + e);
+    })
+    .finally(() => {
+      profileFormEditBtn.textContent = "Сохранить";
     });
 });
 
 //обработчик события открытия модального окна с картинкой
-listCard.addEventListener("click", (e) => {
-  if (e.target.classList.contains("card__image")) {
-    const card = {
-      name: e.target.alt,
-      link: e.target.src,
-    };
-    showImagePopup(card);
-  }
-});
 
 //обработчик события  открытия попапа добовления новой карточки
 buttonAddCard.addEventListener("click", () => {
@@ -111,12 +113,20 @@ newCardPopupForm.addEventListener("submit", (e) => {
 
   newCardApi(nameOfCardInput.value, urlOfCardInput.value)
     .then((cardElement) => {
-      const card = cardCreate(cardElement, showImagePopup, currentUserId);
+      const card = cardCreate(
+        cardElement,
+        showImagePopup,
+        currentUserId,
+        likeCard,
+        deleteCard
+      );
       listCard.prepend(card);
-      newCardPopupFormBtn.textContent = "Сохранить";
     })
     .catch((e) => {
-      console.error("ошибка " + e);
+      console.error("ошибка добавления карточки: " + e);
+    })
+    .finally(() => {
+      newCardPopupFormBtn.textContent = "Сохранить";
     });
 
   nameOfCardInput.value = "";
@@ -142,13 +152,14 @@ avatarPopupEdit.addEventListener("submit", (e) => {
     .then((data) => {
       profileAvatar.style.backgroundImage = `url(${data.avatar})`;
       closePopup(avatarPopupEdit);
+    })
+    .catch((e) => {
+      console.error("ошибка установки аватара: " + e);
+    })
+    .finally(() => {
       avatarPopupEditBtn.textContent = "Сохранить";
     })
-    .catch((err) => {
-      console.error(err);
-    });
-});
-
+})
 //функция отображения карточек
 
 document.querySelectorAll(".popup").forEach((popup) =>
@@ -162,3 +173,74 @@ document.querySelectorAll(".popup").forEach((popup) =>
   })
 );
 enableValidation(selectors);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const config = {
+//   baseUrl: "https://nomoreparties.co/v1/pwff-cohort-1",
+//   headers: {
+//     authorization: "c533c392-ad06-48b1-b082-a69fc8aebd90",
+//     "Content-Type": "aplication/json",
+//   },
+// };
+//  export function handleResponse(res){
+
+//     if(res.ok){
+//       return res.json()
+//     }
+//    // return Promise.reject(res)
+
+//  }
+
+// function sendRequestApi(path,method = 'GET',body = null){
+// const params ={
+//   method: method,
+//   headers: config.headers
+// }
+// if (body) {
+//   params.body = JSON.stringify(body);
+// }
+// console.log(body)
+
+// return fetch(`${config.baseUrl}/${path}`,params).then(handleResponse)
+// }
+
+// export function getProfileData() {
+//   return sendRequestApi('users/me')
+// }
+// export function getInitialCards() {
+//   return sendRequestApi('cards')
+// }
+// export function editProfileData(editName, editAbout) {
+//   return sendRequestApi('users/me','PATCH',{name:editName,about:editAbout
+//   })
+// }
+// export function newCardApi(cardName, cardLink) {
+//   return sendRequestApi('cards','POST',{name: cardName,link:cardLink})
+ 
+// }
+
+// export function deleteCardApi(id) {
+//  return sendRequestApi(`cards/${id}`,'DELETE')
+// }
+
+// export function addLikeCard(id) {
+// return sendRequestApi(`cards/likes/${id}`,'PUT')
+// }
+// export function deleteLikeCard(id) {
+// return sendRequestApi(`cards/likes/${id}`,'DELETE')
+// }
+// export function editAvatarApi(ava) {
+// return sendRequestApi(`users/me/avatar`,'PATCH',{avatar:ava})
+// }
+

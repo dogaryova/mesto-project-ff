@@ -1,35 +1,29 @@
 // включение валидации вызовом enableValidation
 // все настройки передаются при вызове
+function isDisableBtn(btn,isDisable) {
+  btn.disable = isDisable;
+}
 
-export const selectors = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-};
-
-function validateInput(input, formBtn) {
+function validateInput(input, formBtn, selectors) {
   input.addEventListener("input", () => {
-    formBtn.removeAttribute("disabled");
+    isDisableBtn(formBtn,false)
     if (!input.validity.valid) {
-      showErrorMessage(input, formBtn);
+      showErrorMessage(input, formBtn, selectors);
     } else {
-      clearValidation(input);
+      clearValidation(input, selectors);
     }
   });
 }
 
-function showErrorMessage(input, formBtn) {
+function showErrorMessage(input, formBtn, selectors) {
   const errorMessage = input.validationMessage;
   const errorElement = input.nextElementSibling;
   input.classList.add(selectors.inputErrorClass);
   errorElement.textContent = errorMessage;
-  formBtn.setAttribute("disabled", "disabled");
+  isDisableBtn(formBtn,true);
 }
 
-function clearValidation(input) {
+function clearValidation(input, selectors) {
   const errorElement = input.nextElementSibling;
   input.classList.remove(selectors.inputErrorClass);
   errorElement.textContent = "";
@@ -40,6 +34,6 @@ export function enableValidation(selectors) {
   formList.forEach((form) => {
     const inputList = form.querySelectorAll(selectors.inputSelector);
     const formBtn = form.querySelector(selectors.submitButtonSelector);
-    inputList.forEach((input) => validateInput(input, formBtn));
+    inputList.forEach((input) => validateInput(input, formBtn, selectors));
   });
 }

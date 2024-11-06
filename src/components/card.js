@@ -1,5 +1,5 @@
 import { addLikeCard, deleteLikeCard, deleteCardApi } from "./api";
-function cardCreate(item, showImagePopup, id) {
+function cardCreate(item, showImagePopup, id, likeCard, deleteCard) {
   const cardTemplate = document.querySelector("#card-template").content;
   const cardElement = cardTemplate
     .querySelector(".places__item")
@@ -15,43 +15,34 @@ function cardCreate(item, showImagePopup, id) {
   cardImage.alt = item.name;
   cardTitle.textContent = item.name;
 
+  cardElement.addEventListener("click", (e) => {
+    if(e.target.classList.contains('card__image')){
+      const card = {
+        name: e.target.alt,
+        link: e.target.src,
+      };
+      showImagePopup(card);
+    }
+  
+  });
+
   countLikes.textContent = item.likes.length;
   if (hasBeenLiked(item, id)) {
     likeButton.classList.add("card__like-button_is-active");
   }
 
-  likeButton.addEventListener("click", (evt) => {
-    if (evt.target.classList.contains("card__like-button_is-active")) {
-      deleteLikeCard(item._id)
-        .then((upDateCard) => {
-          likeButton.classList.remove("card__like-button_is-active");
-          countLikes.textContent = upDateCard.likes.length;
-        })
-        .catch(console.error);
-    } else {
-      addLikeCard(item._id)
-        .then((upDateCard) => {
-          likeButton.classList.add("card__like-button_is-active");
-          countLikes.textContent = upDateCard.likes.length;
-        })
-        .catch(console.error);
-    }
-  });
+  likeButton.addEventListener("click", (evt) =>
+    likeCard(evt, item._id, likeButton, countLikes)
+  );
 
   cardImage.addEventListener("click", () => {
     showImagePopup(item);
   });
 
   if (item.owner._id === id) {
-    deleteButton.addEventListener("click", () => {
-      deleteCardApi(item._id)
-        .then(() => {
-          cardElement.remove();
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    });
+    deleteButton.addEventListener("click", () =>
+      deleteCard(item._id, cardElement)
+    );
   } else {
     deleteButton.style.display = "none";
   }
@@ -62,14 +53,28 @@ function hasBeenLiked(item, id) {
   return item.likes.some((el) => el._id === id);
 }
 
-function likeCard(e) {
-  e.target.classList.toggle("card__like-button_is-active");
-  console.log("like");
+function likeCard(evt, id, likeButton, countLikes) {
+  const likeMethod = evt.target.classList.contains(
+    "card__like-button_is-active"
+  )
+    ? deleteLikeCard
+    : addLikeCard;
+  likeMethod(id)
+    .then((upDateCard) => {
+      likeButton.classList.toggle("card__like-button_is-active");
+      countLikes.textContent = upDateCard.likes.length;
+    })
+    .catch((err) => console.log(err));
 }
 
-function deleteCard(e) {
-  e.target.closest(".places__item").remove();
-  deleteCardApi(id);
+function deleteCard(id, cardElement) {
+  deleteCardApi(id)
+    .then(() => {
+      cardElement.remove();
+    })
+    .catch((e) => {
+      console.error("ошибка удаление карточки: " + e);
+    });
 }
 
 export { cardCreate, likeCard, deleteCard };
