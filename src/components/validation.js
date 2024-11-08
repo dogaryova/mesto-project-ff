@@ -1,39 +1,57 @@
-// включение валидации вызовом enableValidation
-// все настройки передаются при вызове
-function isDisableBtn(btn,isDisable) {
-  btn.disable = isDisable;
-}
-
-function validateInput(input, formBtn, selectors) {
-  input.addEventListener("input", () => {
-    isDisableBtn(formBtn,false)
-    if (!input.validity.valid) {
-      showErrorMessage(input, formBtn, selectors);
-    } else {
-      clearValidation(input, selectors);
-    }
-  });
-}
-
-function showErrorMessage(input, formBtn, selectors) {
-  const errorMessage = input.validationMessage;
-  const errorElement = input.nextElementSibling;
-  input.classList.add(selectors.inputErrorClass);
-  errorElement.textContent = errorMessage;
-  isDisableBtn(formBtn,true);
-}
-
-function clearValidation(input, selectors) {
-  const errorElement = input.nextElementSibling;
-  input.classList.remove(selectors.inputErrorClass);
+const showInputError = (formPopup, inputPopup, errorMessage, selectors) => {
+  console.log(inputPopup+' showInputError')
+  const errorElement = formPopup.querySelector(`.${inputPopup.id}-error`);
+  inputPopup.classList.add(selectors.inputErrorClass);
+    errorElement.textContent = errorMessage;
+    errorElement.classList.add(selectors.errorClass);
+};
+const hideInputError = (formPopup, inputPopup, selectors) => {
+  console.log(inputPopup)
+  const errorElement = formPopup.querySelector(`.${inputPopup.id}-error`);
+  inputPopup.classList.remove(selectors.inputErrorClass);
+  errorElement.classList.remove(selectors.errorClass);
   errorElement.textContent = "";
+};
+
+function setBtnDisabledState(btn,isDisable) {
+  btn.disabled = isDisable;
 }
+
+
+function validateInput(form, input, formBtn, selectors) {
+  input.addEventListener("input", () => { 
+    setBtnDisabledState(formBtn, !form.checkValidity()) 
+      if (!input.validity.valid) { 
+        showErrorMessage(input, form, selectors); 
+      } else { 
+        hideInputError(form,input, selectors); 
+      } 
+    });
+  }
+
+
+function showErrorMessage(input, form, selectors) {
+
+  if (input.validity.patternMismatch) {
+    input.setCustomValidity(input.dataset.errorMessage);
+  } else {
+    input.setCustomValidity("");
+  };
+
+  if (!input.validity.valid) {
+    showInputError(form, input, input.validationMessage,  selectors);
+  } else {
+    hideInputError(form, input,  selectors);
+  };
+}
+
+
 
 export function enableValidation(selectors) {
   const formList = document.querySelectorAll(selectors.formSelector);
   formList.forEach((form) => {
     const inputList = form.querySelectorAll(selectors.inputSelector);
     const formBtn = form.querySelector(selectors.submitButtonSelector);
-    inputList.forEach((input) => validateInput(input, formBtn, selectors));
+    inputList.forEach((input) => validateInput(form , input, formBtn, selectors));
   });
 }

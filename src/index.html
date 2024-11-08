@@ -57,6 +57,7 @@
           <h3 class="popup__title">Редактировать профиль</h3>
 
           <form class="popup__form" name="edit-profile">
+            <label id="input-name"></label>
             <input
               id="input-name"
               type="text"
@@ -70,8 +71,8 @@
               required
             />
 
-            <span class="popup__error-text"></span>
-
+            <span class="popup__error-text input-name-error"></span>
+            <label id="input-description"></label>
             <input
               id="input-description"
               type="text"
@@ -85,7 +86,7 @@
               required
             />
 
-            <span class="popup__error-text"></span>
+            <span class="popup__error-text input-description-error"></span>
 
             <button type="submit" class="button popup__button">
               Сохранить
@@ -101,6 +102,7 @@
           <h3 class="popup__title">Новое место</h3>
 
           <form class="popup__form" name="new-place">
+            <label id="input-place-name"></label>
             <input
               id="input-place-name"
               type="text"
@@ -114,8 +116,8 @@
               required
             />
 
-            <span class="popup__error-text"></span>
-
+            <span class="popup__error-text  input-name-error"></span>
+            <label id="input-url"></label>
             <input
               id="input-url"
               type="url"
@@ -125,7 +127,7 @@
               required
             />
 
-            <span class="popup__error-text"></span>
+            <span class="popup__error-text input-description-error"></span>
 
             <button type="submit" class="button popup__button">
               Сохранить
@@ -152,6 +154,7 @@
         <h3 class="popup__title">Обновить аватар</h3>
 
         <form class="popup__form">
+          <label id="input-url"></label>
           <input
             id="input-url"
             type="url"
@@ -161,7 +164,7 @@
             required
           />
 
-          <span class="popup__error-text"></span>
+          <span class="popup__error-text input-description-error"></span>
 
           <button type="submit" class="button popup__button">Сохранить</button>
         </form>
