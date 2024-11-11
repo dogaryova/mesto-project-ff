@@ -102,7 +102,7 @@
           <h3 class="popup__title">Новое место</h3>
 
           <form class="popup__form" name="new-place">
-            <label id="input-place-name"></label>
+            <label></label>
             <input
               id="input-place-name"
               type="text"
@@ -111,13 +111,13 @@
               placeholder="Название"
               minlength="2"
               maxlength="30"
-              pattern="^[а-яА-ЯёЁa-zA\-\s]+$"
+              pattern="^[а-яА-ЯёЁa-zA-Z\-\s]+$"
               data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
 
-            <span class="popup__error-text  input-name-error"></span>
-            <label id="input-url"></label>
+            <span class="popup__error-text input-place-name-error"></span>
+            <label></label>
             <input
               id="input-url"
               type="url"
@@ -126,8 +126,7 @@
               placeholder="Ссылка на картинку"
               required
             />
-
-            <span class="popup__error-text input-description-error"></span>
+            <span class="popup__error-text input-url-error"></span>
 
             <button type="submit" class="button popup__button">
               Сохранить
@@ -154,9 +153,9 @@
         <h3 class="popup__title">Обновить аватар</h3>
 
         <form class="popup__form">
-          <label id="input-url"></label>
+          <label></label>
           <input
-            id="input-url"
+            id="avatar-input"
             type="url"
             name="link"
             class="popup__input popup__input_avatar-edit"
@@ -164,7 +163,7 @@
             required
           />
 
-          <span class="popup__error-text input-description-error"></span>
+          <span class="avatar-input-error popup__error-text"></span>
 
           <button type="submit" class="button popup__button">Сохранить</button>
         </form>
