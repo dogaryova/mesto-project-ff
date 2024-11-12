@@ -2,7 +2,7 @@ import "./pages/index.css";
 //import { initialCards } from './components/cards';
 import { openPopup, closePopup } from "./components/modal";
 import { cardCreate, likeCard, deleteCard } from "./components/card";
-import { enableValidation } from "./components/validation";
+import { enableValidation,clearValidation } from "./components/validation";
 import {
   getProfileData,
   getInitialCards,
@@ -79,6 +79,7 @@ editButton.addEventListener("click", () => {
   nameInput.value = profileName.textContent;
   inputJob.value = profileDescription.textContent;
   openPopup(editProfilPopup);
+  clearValidation( editProfilPopup , selectors)
 });
 
 //обработчик события submit редактирование профиля
@@ -104,6 +105,7 @@ profileFormEdit.addEventListener("submit", (e) => {
 //обработчик события  открытия попапа добовления новой карточки
 buttonAddCard.addEventListener("click", () => {
   openPopup(newCardPopup);
+  clearValidation(newCardPopup,selectors)
 });
 
 //обработчик события добовления новой карточки
